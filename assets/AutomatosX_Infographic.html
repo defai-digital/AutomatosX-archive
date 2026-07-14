@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutomatosX — System Overview</title>
+<style>
+  /* System fonts for crisp screenshots (no web-font blur) */
+  :root {
+    --bg: #FFFFFF;
+    --surface: #F4F7FB;
+    --surface-2: #E8EEF6;
+    --border: #C5D0E0;
+    --border-strong: #9AABC4;
+    --blue: #0057B8;
+    --blue-soft: #E8F1FB;
+    --amber: #9A5B00;
+    --amber-soft: #FBF1E0;
+    --green: #0A6B48;
+    --green-soft: #E5F5EE;
+    --text: #0F172A;
+    --text-mid: #334155;
+    --text-light: #475569;
+    --muted: #64748B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: geometricPrecision;
+  }
+
+  body {
+    width: 1600px;
+    margin: 0 auto;
+    padding: 48px 56px 52px;
+  }
+
+  .page {
+    width: 100%;
+    background: var(--bg);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 3px solid var(--blue);
+  }
+
+  .logo {
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--blue); }
+
+  .tagline {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .header-right {
+    text-align: right;
+    max-width: 420px;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1.5px solid;
+  }
+
+  .badge-amber {
+    color: var(--amber);
+    background: var(--amber-soft);
+    border-color: #E0B86A;
+  }
+
+  .badge-blue {
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-color: #8BB8E8;
+  }
+
+  .header-desc {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text-mid);
+  }
+
+  /* Pillars */
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .pillar {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-top: 4px solid var(--blue);
+    border-radius: 6px;
+    padding: 16px 18px 18px;
+  }
+
+  .pillar-num {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .pillar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .pillar-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  /* Section labels */
+  .section-label {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin: 0 0 12px;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .layer {
+    margin-bottom: 14px;
+  }
+
+  .layer:last-child { margin-bottom: 0; }
+
+  .layer-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .layer-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1.5px solid;
+  }
+
+  .tag-user {
+    color: var(--green);
+    background: var(--green-soft);
+    border-color: #7BC4A4;
+  }
+
+  .tag-gov {
+    color: var(--amber);
+    background: var(--amber-soft);
+    border-color: #E0B86A;
+  }
+
+  .tag-infra {
+    color: var(--blue);
+    background: var(--blue-soft);
+    border-color: #8BB8E8;
+  }
+
+  .layer-sub {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .row {
+    display: grid;
+    gap: 10px;
+  }
+
+  .row-2 { grid-template-columns: 1fr 1fr; }
+  .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .chip {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-left: 5px solid;
+    border-radius: 6px;
+    padding: 14px 14px 12px;
+  }
+
+  .chip-user  { border-left-color: var(--green); }
+  .chip-gov   { border-left-color: var(--amber); }
+  .chip-infra { border-left-color: var(--blue); }
+
+  .chip-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .chip-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    line-height: 1.1;
+  }
+
+  .name-user  { color: var(--green); }
+  .name-gov   { color: var(--amber); }
+  .name-infra { color: var(--blue); }
+
+  .avail {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1.5px solid;
+    white-space: nowrap;
+  }
+
+  .avail-public {
+    color: var(--green);
+    background: var(--green-soft);
+    border-color: #7BC4A4;
+  }
+
+  .avail-private {
+    color: var(--muted);
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+
+  .chip-role {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .chip-desc {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  .chip-link {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue);
+    word-break: break-all;
+  }
+
+  .arrow {
+    text-align: center;
+    color: var(--blue);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 4px 0 10px;
+  }
+
+  /* Flow */
+  .flow-wrap {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1.5px solid var(--border);
+  }
+
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .flow-step {
+    flex: 1;
+    text-align: center;
+  }
+
+  .flow-box {
+    font-size: 13px;
+    font-weight: 800;
+    padding: 10px 6px;
+    border-radius: 6px;
+    border: 1.5px solid;
+    margin-bottom: 6px;
+  }
+
+  .fb-user  { color: var(--green); background: var(--green-soft); border-color: #7BC4A4; }
+  .fb-gov   { color: var(--amber); background: var(--amber-soft); border-color: #E0B86A; }
+  .fb-infra { color: var(--blue);  background: var(--blue-soft);  border-color: #8BB8E8; }
+
+  .flow-sub {
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--text-light);
+  }
+
+  .flow-sep {
+    display: flex;
+    align-items: center;
+    color: var(--border-strong);
+    font-size: 20px;
+    font-weight: 700;
+    padding-bottom: 22px;
+  }
+
+  /* Diff */
+  .diff-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .diff-item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .diff-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .diff-letter {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--blue);
+    opacity: 0.35;
+    line-height: 1;
+  }
+
+  .diff-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .diff-body {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  .diff-body strong {
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  /* Compute */
+  .compute {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .compute-node {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-top: 4px solid;
+    border-radius: 6px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+
+  .cn-1 { border-top-color: var(--blue); }
+  .cn-2 { border-top-color: var(--amber); }
+  .cn-3 { border-top-color: var(--border-strong); }
+
+  .cn-title {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .cn-1 .cn-title { color: var(--blue); }
+  .cn-2 .cn-title { color: var(--amber); }
+  .cn-3 .cn-title { color: var(--text-mid); }
+
+  .cn-body {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  /* Engage */
+  .engage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .engage-card {
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    background: #fff;
+  }
+
+  .engage-public { border-top: 4px solid var(--green); }
+  .engage-enterprise { border-top: 4px solid var(--amber); }
+
+  .engage-title {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .engage-public .engage-title { color: var(--green); }
+  .engage-enterprise .engage-title { color: var(--amber); }
+
+  .engage-item {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  .engage-item strong { color: var(--text); font-weight: 700; }
+
+  /* Legend + footer */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .footer-left {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .footer-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .footer-tags .dot { color: var(--blue); }
+
+  .footer-links {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <div>
+      <div class="logo">Automatos<span>X</span></div>
+      <div class="tagline">Sovereign AI Orchestration &amp; Governance Platform</div>
+    </div>
+    <div class="header-right">
+      <div class="badges">
+        <span class="badge badge-amber">Contract-First · Deterministic AI</span>
+        <span class="badge badge-blue">Offline / Air-Gapped Ready</span>
+      </div>
+      <p class="header-desc">Governance &amp; orchestration above inference engines — for Enterprise, Government, and Defence.</p>
+    </div>
+  </header>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-num">01 · CORE CAPABILITY</div>
+      <div class="pillar-title">Verifiable AI</div>
+      <div class="pillar-desc">Every decision is traceable, inspectable, and cryptographically anchorable.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02 · EXECUTION MODEL</div>
+      <div class="pillar-title">Reproducible Pipelines</div>
+      <div class="pillar-desc">Same input → same output. Deterministic contract-based execution.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03 · COMPLIANCE</div>
+      <div class="pillar-title">Full Audit Trail</div>
+      <div class="pillar-desc">Explainability across reasoning steps and data flows.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">04 · DEPLOYMENT</div>
+      <div class="pillar-title">Sovereign / Offline</div>
+      <div class="pillar-desc">Air-gapped capable. Data sovereignty for sensitive operations.</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div>
+      <div class="section-label">Product Architecture</div>
+      <div class="card">
+
+        <div class="layer">
+          <div class="layer-head">
+            <span class="layer-tag tag-user">User Endpoints</span>
+            <span class="layer-sub">Application entry points</span>
+          </div>
+          <div class="row row-2">
+            <div class="chip chip-user">
+              <div class="chip-top">
+                <div class="chip-name name-user">AX Studio</div>
+                <span class="avail avail-public">Public</span>
+              </div>
+              <div class="chip-role">General GenAI Workspace</div>
+              <div class="chip-desc">Enterprise knowledge + agentic workflows</div>
+              <div class="chip-link">github.com/defai-digital/ax-studio</div>
+            </div>
+            <div class="chip chip-user">
+              <div class="chip-top">
+                <div class="chip-name name-user">AX Code</div>
+                <span class="avail avail-public">Public</span>
+              </div>
+              <div class="chip-role">AI Coding &amp; Automation</div>
+              <div class="chip-desc">Developer / IT agent runtime for real repos</div>
+              <div class="chip-link">github.com/defai-digital/ax-code</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="layer">
+          <div class="layer-head">
+            <span class="layer-tag tag-gov">Governance Layer</span>
+            <span class="layer-sub">Trust &amp; policy enforcement</span>
+          </div>
+          <div class="row">
+            <div class="chip chip-gov">
+              <div class="chip-top">
+                <div class="chip-name name-gov">AX Trust</div>
+                <span class="avail avail-private">Private</span>
+              </div>
+              <div class="chip-role">Deterministic AI Pipeline · Core Differentiator</div>
+              <div class="chip-desc">Contract-based execution · Guardrails + policy · Full audit trail &amp; explainability</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <div class="layer">
+          <div class="layer-head">
+            <span class="layer-tag tag-infra">AI Infrastructure</span>
+            <span class="layer-sub">Serving · Knowledge · Inference</span>
+          </div>
+          <div class="row row-3">
+            <div class="chip chip-infra">
+              <div class="chip-top">
+                <div class="chip-name name-infra">AX Serving</div>
+                <span class="avail avail-private">Private</span>
+              </div>
+              <div class="chip-role">Enterprise Orchestration</div>
+              <div class="chip-desc">Multi-node routing · Edge / offline fleet control</div>
+            </div>
+            <div class="chip chip-infra">
+              <div class="chip-top">
+                <div class="chip-name name-infra">AX Fabric</div>
+                <span class="avail avail-private">Private</span>
+              </div>
+              <div class="chip-role">Knowledge Infrastructure</div>
+              <div class="chip-desc">RAG + distillation · Knowledge lifecycle</div>
+            </div>
+            <div class="chip chip-infra">
+              <div class="chip-top">
+                <div class="chip-name name-infra">AX Engine</div>
+                <span class="avail avail-public">Public</span>
+              </div>
+              <div class="chip-role">Mac-Native Inference</div>
+              <div class="chip-desc">Apple Silicon · Large local models</div>
+              <div class="chip-link">github.com/defai-digital/ax-engine</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-wrap">
+          <div class="section-label">System Data Flow</div>
+          <div class="flow">
+            <div class="flow-step">
+              <div class="flow-box fb-user">User</div>
+              <div class="flow-sub">Studio / Code</div>
+            </div>
+            <div class="flow-sep">→</div>
+            <div class="flow-step">
+              <div class="flow-box fb-gov">AX Trust</div>
+              <div class="flow-sub">Governance + Contract</div>
+            </div>
+            <div class="flow-sep">→</div>
+            <div class="flow-step">
+              <div class="flow-box fb-infra">AX Serving</div>
+              <div class="flow-sub">Routing + Orchestration</div>
+            </div>
+            <div class="flow-sep">→</div>
+            <div class="flow-step">
+              <div class="flow-box fb-infra">AX Engine</div>
+              <div class="flow-sub">Inference + External LLMs</div>
+            </div>
+            <div class="flow-sep">→</div>
+            <div class="flow-step">
+              <div class="flow-box fb-infra">AX Fabric</div>
+              <div class="flow-sub">Knowledge + Memory</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">Key Differentiation</div>
+      <div class="card">
+        <div class="diff-list">
+          <div class="diff-item">
+            <div class="diff-letter">A</div>
+            <div>
+              <div class="diff-title">The Missing Governance Layer</div>
+              <div class="diff-body">Market focuses on inference (vLLM, llama.cpp). AutomatosX adds <strong>governance + orchestration + reproducibility</strong> above LLMs.</div>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-letter">B</div>
+            <div>
+              <div class="diff-title">Sovereign / Offline AI</div>
+              <div class="diff-body"><strong>Air-gapped deployment</strong>, defence-ready. Mac + Jetson Thor hybrid. Zero mandatory cloud API dependency.</div>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-letter">C</div>
+            <div>
+              <div class="diff-title">Deterministic vs. Probabilistic</div>
+              <div class="diff-body"><strong>Contract-first execution</strong>. Same input → same output. Enterprise reliability and auditability.</div>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-letter">D</div>
+            <div>
+              <div class="diff-title">Heterogeneous Compute</div>
+              <div class="diff-body"><strong>Mac Studio</strong> (control + light inference) + <strong>Jetson Thor Grid</strong> (heavy inference / CV). Extensible to DGX clusters.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Heterogeneous Compute Architecture</div>
+  <div class="compute">
+    <div class="compute-node cn-1">
+      <div class="cn-title">Mac Studio Grid</div>
+      <div class="cn-body">Control plane + light inference<br>Apple Silicon · Unified Memory</div>
+    </div>
+    <div class="compute-node cn-2">
+      <div class="cn-title">Jetson Thor Grid</div>
+      <div class="cn-body">Heavy inference + CV workloads<br>Edge-deployable · Air-gap ready</div>
+    </div>
+    <div class="compute-node cn-3">
+      <div class="cn-title">DGX / Cluster</div>
+      <div class="cn-body">Extensible to datacenter scale<br>Architecture-agnostic design</div>
+    </div>
+  </div>
+
+  <div class="section-label">How to Engage</div>
+  <div class="engage">
+    <div class="engage-card engage-public">
+      <div class="engage-title">Public products — start today</div>
+      <div class="engage-item"><strong>AX Studio</strong> — GenAI workspace for knowledge work</div>
+      <div class="engage-item"><strong>AX Code</strong> — coding agents on real repositories</div>
+      <div class="engage-item"><strong>AX Engine</strong> — local models on Apple Silicon</div>
+    </div>
+    <div class="engage-card engage-enterprise">
+      <div class="engage-title">Enterprise stack — full system</div>
+      <div class="engage-item"><strong>AX Trust</strong> — contracts, guardrails, audit</div>
+      <div class="engage-item"><strong>AX Serving</strong> — multi-node routing &amp; fleet control</div>
+      <div class="engage-item"><strong>AX Fabric</strong> — private knowledge &amp; lifecycle</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="avail avail-public">Public</span> Open source on GitHub</div>
+    <div class="legend-item"><span class="avail avail-private">Private</span> Enterprise products — contact DEFAI (no public source links)</div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">AutomatosX · Sovereign AI System · DEFAI Digital</div>
+    <div class="footer-tags">
+      <span>Contract-First</span><span class="dot">·</span>
+      <span>Air-Gapped</span><span class="dot">·</span>
+      <span>Deterministic</span><span class="dot">·</span>
+      <span>Auditable</span>
+    </div>
+    <div class="footer-links">
+      <span>github.com/defai-digital/AutomatosX</span>
+      <span>ax-studio</span>
+      <span>ax-code</span>
+      <span>ax-engine</span>
+      <span>defai.digital</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
